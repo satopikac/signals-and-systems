@@ -63,12 +63,13 @@ jiepai = step/step(index(1))% 得到节拍
 
 %通过求解自相关系数获得周期等信息
 message = string();
-guitar_weight = zeros(12,28);     
+guitar_info = zeros(12,28);     
 
 len=length(real_point);
 % 对每一个音符进行操作
 T_note=[];
 for i_rp=1:len-1
+%for i_rp=10:11
    l_note=real_point(i_rp+1)-real_point(i_rp);
     %一个音符音乐四分，取中间两段进行自相关分析 求出周期
     note = y(real_point(i_rp)+ceil(l_note/4):real_point(i_rp+1)-ceil(l_note/4));
@@ -83,20 +84,31 @@ for i_rp=1:len-1
     % 找到超过阈值的峰值  
      index= mqy_find_peak(corr,10,threshold2);
     % plot(lag,corr);
-    % hold on;
-    % scatter(index,corr(index),'*');
 
-    %signal processing 可以找到峰值的对应值 索引
+
     x_d=diff(index);
     T=sum(x_d)/length(x_d);  %不一定是整数
-    T_note=[T_note,T];
-     [fourier_f,f] = analyse(note,T,fs);%进行fourier变换
-    fourier_f = fourier_f(f>=0);    %保留正频率部分
-    f = f(f>=0); 
+    T_note=[T_note,T];%每一个音符的周期
+     [fourier_f,f] = mqy_fft_and_cleanwave(note,T,fs);%进行fourier变换
+     fourier_f = fourier_f(f>=0);    %保留正频率部分
+     f = f(f>=0); 
    % plot(f, fourier_f)
     f_index = mqy_find_peak(fourier_f,50,0.01*max(fourier_f));%找到极值点
-
+    %阈值 0.01*max(fourier_f)
+    %分析出了每一个音符中出现的基波和多次谐波
     %分析音调
+   %  figure(55555);
+   %  subplot(ceil(len/2),2,i_rp);
+   %  plot(f,fourier_f);
+   %  title(num2str(i_rp));
+   %  xlabel('');
+   %  ylabel('');
+   % 
+   %  hold on;                        
+   %  scatter(f(f_index),fourier_f(f_index));
+   %  hold off;
+
+
 
 
 end
