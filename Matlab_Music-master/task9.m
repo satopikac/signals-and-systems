@@ -58,8 +58,8 @@ for i = 1:length(index)-1
     %}
     
     A = recognize(f(f_index),fourier_f(f_index));
-    yin = string('第')+string(num2str(i))+string('个音 ')...
-        +string('拍数:')+string(num2str(jiepai(i))) + ' ';
+    yin = "第"+string(num2str(i))+"个音 "...
+        +"拍数:"+string(num2str(jiepai(i))) + ' ';
     msg = [msg;yin;print_music_msg(A)];
     
 if(A(4,1) >= 174.61*0.98 & A(4,1) <= 329.63*1.02)
