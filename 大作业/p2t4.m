@@ -69,10 +69,10 @@ len=length(real_point);
 % 对每一个音符进行操作
 T_note=[];
 for i_rp=1:len-1
-%for i_rp=10:11
+% for i_rp=10:10
    l_note=real_point(i_rp+1)-real_point(i_rp);
     %一个音符音乐四分，取中间两段进行自相关分析 求出周期
-    note = y(real_point(i_rp)+ceil(l_note/4):real_point(i_rp+1)-ceil(l_note/4));
+    note = fmt(real_point(i_rp)+ceil(l_note/4):real_point(i_rp+1)-ceil(l_note/4));
     % L2=real_point(2)-real_point(1);
     % note=fmt(real_point(1)+ceil(L2/4):real_point(2)-ceil(L2/4));
     [a,b] = xcorr(note,'unbiased');
@@ -93,10 +93,10 @@ for i_rp=1:len-1
      fourier_f = fourier_f(f>=0);    %保留正频率部分
      f = f(f>=0); 
    % plot(f, fourier_f)
-    f_index = mqy_find_peak(fourier_f,50,0.01*max(fourier_f));%找到极值点
+    f_index = mqy_find_peak(fourier_f,50,0.01*max(fourier_f));
+    %找到极值点的索引
     %阈值 0.01*max(fourier_f)
-    %分析出了每一个音符中出现的基波和多次谐波
-    %分析音调
+   
    %  figure(55555);
    %  subplot(ceil(len/2),2,i_rp);
    %  plot(f,fourier_f);
@@ -107,13 +107,34 @@ for i_rp=1:len-1
    %  hold on;                        
    %  scatter(f(f_index),fourier_f(f_index));
    %  hold off;
-   
+    %分析出了每一个音符中出现的基波和多次谐波
+    %分析音调
+    %将信息进一步提取出来
+    
+   A = mqy_recognize(f(f_index),fourier_f(f_index)); %传入极值点的频率和幅度
+   %将信息储存到可调用的矩阵中
+   %得到每一个音符内 基频和谐波的频率和幅度信息
 
+   note_msg = "第"+string(num2str(i_rp))+"个音"+"的拍数是:"+string(num2str(jiepai(i_rp))) + ' ';
+   message = [message;note_msg;mqy_read_music_msg(A)];
 
+   %以上的message存储了每一个音符的音调和节拍信息 可以直接使用
+   %下面会将其导出
 
+   %下面另将此种乐器的特征傅里叶谐波信息储存起来 供后面任务合成音乐用
+
+if(A(4,1) >= 174.61*0.98 && A(4,1) <= 329.63*1.02)
+        %认为在需要的频率范围内
+        n = round(log2(A(4,1)/174.61)*12+1);
+        if(guitar_info(n,1)==0)
+            y = write_xiebo(A);
+            guitar_info(n,:) = [y,zeros(1,28-length(y))];
+        end
+ end
 
 end
+file = fopen('mqy_msg.txt','w+');
+fprintf(file,'%s',message);
 
-
-
+save('guitar_info.mat', 'guitar_info');
 

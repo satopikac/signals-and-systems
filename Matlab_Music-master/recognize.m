@@ -7,7 +7,10 @@ function A = recognize(music_f,music_A)
 A = [];
 base_f = [];                %存基调频率
 for i = 1:length(music_f)
-    if(music_f(i)==0)continue;end
+    if(music_f(i)==0)
+        continue;
+    end
+    
     disp(num2str(i)+"次迭代,频率为"+num2str(music_f(i))+"Hz");
     if(length(base_f)==0)   %第一次寻找
         base_f(1:2,1) = [music_f(i),music_A(i)];

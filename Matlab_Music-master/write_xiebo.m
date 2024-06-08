@@ -6,4 +6,3 @@ x = input_A(2:3,:);
 for i = 1:c 
     y(x(1,i)) = x(2,i);
 end
-y
