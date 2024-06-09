@@ -127,14 +127,14 @@ if(A(4,1) >= 174.61*0.98 && A(4,1) <= 329.63*1.02)
         %认为在需要的频率范围内
         n = round(log2(A(4,1)/174.61)*12+1);
         if(guitar_info(n,1)==0)
-            y = write_xiebo(A);
+            y =mqy_write_xiebo(A);
             guitar_info(n,:) = [y,zeros(1,28-length(y))];
         end
  end
 
 end
-file = fopen('mqy_msg.txt','w+');
+file = fopen('mqy_msg.txt','w+');  %把获取的音符信息写入txt文件
 fprintf(file,'%s',message);
 
-save('guitar_info.mat', 'guitar_info');
-
+save('guitar_info.mat', 'guitar_info'); %音色的傅里叶信息储存在guitar_info文件
+%需要后续调整
