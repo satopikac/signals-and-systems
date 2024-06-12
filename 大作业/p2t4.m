@@ -137,4 +137,4 @@ file = fopen('mqy_msg.txt','w+');  %把获取的音符信息写入txt文件
 fprintf(file,'%s',message);
 
 save('guitar_info.mat', 'guitar_info'); %音色的傅里叶信息储存在guitar_info文件
-%需要后续调整
+%数据集不全 需要后续调整

@@ -15,12 +15,38 @@ left_t=0; %定义当前时间
 % 1 1.45313083421944	0.951432937659109	1.09709115326487	0.0600275872091436	0.107171354165874	0.350680051728090	0.125334248300950	0.144399793515641	0.0645028979498517
 %获得的傅里叶级数相对幅度
 
-scale=1.1;
-weight = [1,1.45313083421944,0.951432937659109,1.09709115326487,0.0600275872091436,0.107171354165874];    %1-6各谐波分量权重
+scale=1.15;
+
+load('mqy_guitar_weight_final.mat')%此文件含有吉他的各音调傅里叶信息
+
+weight = guitar_weight;
+weight(:,10:28)=0; %高频谐波忽略
+
+
 nums=length(tone);
+N=[];
 for i=1:nums
-    gate=(t>=left_t&t<left_t+one_step*last_time(i)*scale);
-   song_of_single_key= gate.* ( (weight(1))*sin( 2*pi*f(i)*(t-left_t)) + (weight(2))*sin( 4*pi*f(i)*(t-left_t)) +  (weight(3))*sin( 6*pi*f(i)*(t-left_t))+(weight(4))*sin( 8*pi*f(i)*(t-left_t))+(weight(5))*sin( 10*pi*f(i)*(t-left_t))+(weight(6))*sin( 12*pi*f(i)*(t-left_t))); 
+    gate=(t>=left_t&t<left_t+one_step*last_time(i)*scale);%声音生成区间
+    right_time=left_t+one_step*last_time(i)*scale;
+    
+    n = round(log2(f(i)/174.61)*12+1);         %十二平均律求对应的位置
+    if(n<1 || n > 12)
+        n = mod(n,12);
+    end
+    N=[N,n];
+
+    [r,c] = size(weight);
+    y=0*t;
+    for j= 1:c
+        if(weight(n,j)~=0)
+         
+            y = y + weight(n,j)*sin(2*pi*j*f(i)*(t-left_t));
+        end
+    end
+    if(i==5)
+        plot(y)
+    end
+    song_of_single_key= gate.*y;   
     sosk_adj=adj_music(song_of_single_key,left_t,one_step*last_time(i)*scale,t);
     song=sosk_adj+song;
     left_t=left_t+one_step*last_time(i);
