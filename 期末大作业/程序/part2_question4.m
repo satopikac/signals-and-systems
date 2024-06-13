@@ -36,7 +36,7 @@ threshold = 0.1; % 最小峰值幅度
 
 real_point=mqy_find_peak(x,N,threshold);
 
-% 绘制信号和峰值点  
+%绘制信号和峰值点  
 % num = length(real_point);  
 % plot(1:length(x), x); % 绘制信号  
 % hold on;  
@@ -90,7 +90,7 @@ for i_rp=1:len-1
   
     % 找到超过阈值的峰值  
      index= mqy_find_peak(corr,10,threshold2);
-    % plot(lag,corr);
+     % plot(lag,corr);
 
 
     x_d=diff(index);
@@ -104,16 +104,16 @@ for i_rp=1:len-1
     %找到极值点的索引
     %阈值 0.01*max(fourier_f)
    
-   %  figure(55555);
-   %  subplot(ceil(len/2),2,i_rp);
-   %  plot(f,fourier_f);
-   %  title(num2str(i_rp));
-   %  xlabel('');
-   %  ylabel('');
-   % 
-   %  hold on;                        
-   %  scatter(f(f_index),fourier_f(f_index));
-   %  hold off;
+    figure(55555);
+    subplot(ceil(len/2),2,i_rp);
+    plot(f,fourier_f);
+    title(num2str(i_rp));
+    xlabel('');
+    ylabel('');
+
+    hold on;                        
+    scatter(f(f_index),fourier_f(f_index));
+    hold off;
     %分析出了每一个音符中出现的基波和多次谐波
     %分析音调
     %将信息进一步提取出来
